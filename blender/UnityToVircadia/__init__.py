@@ -11,7 +11,7 @@ bl_info = {
     "category": "Object",
     "description": "Tools for converting Unity assets to Vircadia",
     "author": "Ben Brennan, Vircadia",
-    "version": (1, 0),
+    "version": (1, 0, 0),
     "location": "View3D > Sidebar > UnityToVircadia Tab",
 }
 
