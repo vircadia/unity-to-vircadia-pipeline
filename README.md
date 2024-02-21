@@ -7,12 +7,13 @@ These packages are designed to allow the export of scenes from Unity to Vircadia
 You'll need:
 
 - Unity 2021.3.4.f1
-
+  
   - gltfast package (by name, `com.unity.cloud.gltfast`)
-  - Unity2Vircadia package **(this repo)**
+  - Unity2Vircadia package **[(this repo)](https://github.com/vircadia/unity-to-vircadia-pipeline/blob/master/dist/Unity2Vircadia_v1.0.0.unitypackage)**
 
 - Blender 4.0.2 or newer
-  - UnityToVircadia Blender addon **(this repo)**
+  
+  - UnityToVircadia Blender addon [****(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/blob/master/dist/UnityToVircadia_BlenderAddon_v1.0.0.zip)**
 
 ### Step 1. Unity
 
@@ -40,25 +41,3 @@ You are now ready to upload your `.glb` file to the public folder. An S3 bucket 
 ## Notes
 
 - Use URP shaders with a "Metallic" workflow. Specular is not recommended and may cause visual inconsistencies.
-
-## Developer
-
-### Blender
-
-To make ready the Blender addon, simply wrap the `blender/UnityToVircadia` folder in a second folder named `UnityToVircadia_BlenderAddon`, then zip that folder and install it as an addon in Blender. The `__init__.py` file is the entry point for the plugin.
-
-The final structure should look like this:
-
-```
-UnityToVircadia_BlenderAddon.zip
-  - UnityToVircadia_BlenderAddon
-    - UnityToVircadia
-      - __init__.py
-      - ...
-```
-
-For example,
-
-### Unity
-
-...
