@@ -45,7 +45,19 @@ You are now ready to upload your `.glb` file to the public folder. An S3 bucket 
 
 ### Blender
 
-To make ready the Blender addon, simply wrap the UnityToVircadia folder in a zip file and install it as an addon in Blender. The `__init__.py` file is the entry point for the plugin.
+To make ready the Blender addon, simply wrap the `blender/UnityToVircadia` folder in a second folder named `UnityToVircadia_BlenderAddon`, then zip that folder and install it as an addon in Blender. The `__init__.py` file is the entry point for the plugin.
+
+The final structure should look like this:
+
+```
+UnityToVircadia_BlenderAddon.zip
+  - UnityToVircadia_BlenderAddon
+    - UnityToVircadia
+      - __init__.py
+      - ...
+```
+
+For example,
 
 ### Unity
 
