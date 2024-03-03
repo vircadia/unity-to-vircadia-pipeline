@@ -31,9 +31,9 @@ You'll need:
 2. Install the `UnityToVircadia` Blender plugin by going to "Edit/Preferences," select the "Add-on" tab and press the "Install" button. Select the `UnityToVircadia.zip` file and Press "Install Add-on". Press the check checkbox to enable the plugin. This will create a `UnityToVircadia` tab on the N panel.
 3. Open the `UnityToVircadia` tab on the N Panel
 4. Select "Import glTF 2.0" and Import the `.glb` file you exported from Unity
-5. Press "Correct Scale" Button"
-6. Press "Import Lightmap Info" and a dialog will open. Select the "LightmapInfo.txt" file from the folder we created earlier. This will generate a mesh container for the lightmaps called "vircadia_lightmapData." \* Note: At the moment you will not see these lightmaps until export. container will be removed automatically in Vircadia-web
-7. Press "Adjust Shaders" to correct material properties and repeats.
+5. Press "Import Lightmap Info" and a dialog will open. Select the "LightmapInfo.txt" file from the folder we created earlier. This will generate a mesh container for the lightmaps called "vircadia_lightmapData." \* Note: At the moment you will not see these lightmaps until export. container will be removed automatically in Vircadia-web
+6. Press "Adjust Shaders" to correct material properties and repeats.
+7. Press "Preview Lightmaps" to preview lightmaps. You can then "Clear Lightmaps" to revert to your previous state if you choose.
 8. Press the "Export glTF 2.0 button to export your model. Set your format to `glTF Binary (.glb)`. From within the export dialog, open the "include" tab and be sure "Custom Properties" is selected. We recommend setting your Material Image format to `Webp` and checking "Create Webp". Compression can be used as well to lower file size, but minor artifacts may appear. Export `glTF 2.0`.
 
 You are now ready to upload your `.glb` file to the public folder. An S3 bucket is recommended. Amazon (AWS), Digital Ocean, Linode, and more all offer S3 compatible storage.
@@ -41,3 +41,4 @@ You are now ready to upload your `.glb` file to the public folder. An S3 bucket 
 ## Notes
 
 - Use URP shaders with a "Metallic" workflow. Specular is not recommended and may cause visual inconsistencies.
+- At the moment ".gltf" export (separate .bin and textures) from unity's glTFast plugin will not import properly into blender, so be sure to use ".glb"
