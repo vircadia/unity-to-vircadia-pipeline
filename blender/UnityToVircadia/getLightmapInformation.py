@@ -15,23 +15,65 @@ def parse_info(content):
         for line in lines[1:]:
             if line.startswith('Lightmap Texture:'):
                 obj_info['lightmap_texture'] = line.split(': ')[1].strip()
+            elif line.startswith('Tiling X:'):
+                obj_info['tiling_x'] = float(line.split(': ')[1].strip())
+            elif line.startswith('Tiling Y:'):
+                obj_info['tiling_y'] = float(line.split(': ')[1].strip())
+            elif line.startswith('Offset X:'):
+                obj_info['offset_x'] = float(line.split(': ')[1].strip())
+            elif line.startswith('Offset Y:'):
+                obj_info['offset_y'] = float(line.split(': ')[1].strip())
             elif line.startswith('Path:'):
                 obj_info['path'] = line.split(': ')[1].strip()
-        info.append(obj_info)
+        if 'lightmap_texture' in obj_info:
+            info.append(obj_info)
     return info
 
 def create_materials(obj_info):
     materials = []
     for info in obj_info:
-        mat_name = f"vircadia_lightmapData_{os.path.splitext(info['lightmap_texture'])[0]}"
-        mat = bpy.data.materials.new(name=mat_name)
-        mat.use_nodes = True
-        bsdf = mat.node_tree.nodes.get('Principled BSDF')
-        tex_image = mat.node_tree.nodes.new('ShaderNodeTexImage')
-        tex_image.image = bpy.data.images.load(os.path.join(info['path'], info['lightmap_texture']))
-        mat.node_tree.links.new(bsdf.inputs['Base Color'], tex_image.outputs['Color'])
+        # Remove the file extension for the lightmap texture name
+        lightmap_texture_name_without_extension = os.path.splitext(info['lightmap_texture'])[0]
+        mat_name = f"vircadia_lightmapData_{lightmap_texture_name_without_extension}"
+        
+        if mat_name in bpy.data.materials:
+            mat = bpy.data.materials[mat_name]
+        else:
+            mat = bpy.data.materials.new(name=mat_name)
+            mat.use_nodes = True
+            bsdf = mat.node_tree.nodes.get('Principled BSDF')
+            tex_image = mat.node_tree.nodes.new('ShaderNodeTexImage')
+            tex_image.label = "BASE COLOR"  # Set the label to "BASE COLOR"
+            
+            image_path = os.path.join(info['path'], info['lightmap_texture'])
+            image_name = os.path.splitext(os.path.basename(image_path))[0]  # Remove the extension from the image name
+            
+            if image_name in bpy.data.images:
+                tex_image.image = bpy.data.images[image_name]
+            else:
+                # Load the image and remove the extension from its name in Blender
+                loaded_image = bpy.data.images.load(image_path)
+                loaded_image.name = image_name
+                tex_image.image = loaded_image
+            
+            mat.node_tree.links.new(bsdf.inputs['Base Color'], tex_image.outputs['Color'])
+        
         materials.append(mat)
     return materials
+
+def adjust_uv_maps(obj_info):
+    for info in obj_info:
+        obj = bpy.data.objects.get(info['name'])
+        if obj and 'tiling_x' in info and 'tiling_y' in info and 'offset_x' in info and 'offset_y' in info:
+            if len(obj.data.uv_layers) < 2:
+                obj.data.uv_layers.new(name="LightmapUV")
+            uv_layer = obj.data.uv_layers[1].data
+            
+            for poly in obj.data.polygons:
+                for loop_index in poly.loop_indices:
+                    loop_uv = uv_layer[loop_index]
+                    loop_uv.uv[0] = (loop_uv.uv[0] * info['tiling_x']) + info['offset_x']
+                    loop_uv.uv[1] = (loop_uv.uv[1] * info['tiling_y']) + info['offset_y']
 
 def create_and_join_planes(materials):
     created_objects = []
@@ -42,15 +84,12 @@ def create_and_join_planes(materials):
         plane.data.materials.append(mat)
         created_objects.append(plane)
 
-    # Ensure all created planes are selected
     bpy.ops.object.select_all(action='DESELECT')
     for obj in created_objects:
         obj.select_set(True)
 
-    # Set one of the planes as the active object
     bpy.context.view_layer.objects.active = created_objects[0]
 
-    # Join the planes into a single object
     bpy.ops.object.join()
     bpy.context.active_object.name = "vircadia_lightmapData"
 
@@ -60,7 +99,7 @@ def add_custom_properties(obj_info, materials):
         if obj:
             mat_name = f"vircadia_lightmapData_{os.path.splitext(info['lightmap_texture'])[0]}"
             obj['vircadia_lightmap'] = mat_name
-            obj['vircadia_lightmap_texcoord'] = 1  # Default value set to 1
+            obj['vircadia_lightmap_texcoord'] = 1
 
 def make_materials_single_user(obj_info):
     for info in obj_info:
@@ -74,9 +113,10 @@ def import_lightmap_info(filepath):
     content = load_lightmap_info(filepath)
     obj_info = parse_info(content)
     materials = create_materials(obj_info)
+    adjust_uv_maps(obj_info)
     create_and_join_planes(materials)
     add_custom_properties(obj_info, materials)
-    make_materials_single_user(obj_info)  # Make specified object materials single-user
+    make_materials_single_user(obj_info)
 
 class GetLightmapInfo(bpy.types.Operator):
     """Get Lightmap Information"""
@@ -93,3 +133,12 @@ class GetLightmapInfo(bpy.types.Operator):
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+def register():
+    bpy.utils.register_class(GetLightmapInfo)
+
+def unregister():
+    bpy.utils.unregister_class(GetLightmapInfo)
+
+if __name__ == "__main__":
+    register()
