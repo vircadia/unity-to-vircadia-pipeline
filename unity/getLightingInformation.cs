@@ -79,13 +79,21 @@ public class LightmapInfoLogger
     private static void LightmapIndexInfo(Renderer renderer, StringBuilder sb)
     {
         int lightmapIndex = renderer.lightmapIndex;
+        Vector4 lightmapScaleOffset = renderer.lightmapScaleOffset;
+
         sb.AppendLine("Lightmap Index: " + lightmapIndex);
         if (lightmapIndex != -1 && LightmapSettings.lightmaps.Length > lightmapIndex)
         {
             LightmapData lightmapData = LightmapSettings.lightmaps[lightmapIndex];
             string lightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapColor);
             sb.AppendLine("Lightmap Texture: " + lightmapData.lightmapColor.name + Path.GetExtension(lightmapPath));
-            
+
+            // Now printing each on its own line
+            sb.AppendLine("Tiling X: " + lightmapScaleOffset.x);
+            sb.AppendLine("Tiling Y: " + lightmapScaleOffset.y);
+            sb.AppendLine("Offset X: " + lightmapScaleOffset.z);
+            sb.AppendLine("Offset Y: " + lightmapScaleOffset.w);
+
             if (lightmapData.lightmapDir != null)
             {
                 string dirLightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapDir);
@@ -98,14 +106,14 @@ public class LightmapInfoLogger
 
             if (reflectionProbeTextures.TryGetValue(lightmapIndex, out string reflectionProbeTexture))
             {
-                sb.AppendLine($"Reflection Probe Texture: {reflectionProbeTexture}");
+                sb.AppendLine("Reflection Probe Texture: " + reflectionProbeTexture);
             }
             else
             {
                 sb.AppendLine("No associated reflection probe texture found.");
             }
 
-            sb.AppendLine($"Path: {GetAbsolutePath(texturesFolderPath)}");
+            sb.AppendLine("Path: " + GetAbsolutePath(texturesFolderPath));
         }
         else
         {

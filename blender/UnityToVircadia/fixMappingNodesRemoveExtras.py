@@ -1,12 +1,12 @@
 import bpy
 
-def connect_mapping_to_textures_and_adjust_gloss(material):
+def connect_mapping_to_textures_and_adjust_gloss_and_spec(material):
     if not material.node_tree:
         return
 
     nodes = material.node_tree.nodes
     mapping_node = None
-    gloss_texture_node = None
+    target_texture_node = None  # This will be used for both gloss and spec textures
 
     # Find the mapping node
     for node in nodes:
@@ -19,13 +19,13 @@ def connect_mapping_to_textures_and_adjust_gloss(material):
             if node.type == 'TEX_IMAGE':
                 material.node_tree.links.new(mapping_node.outputs['Vector'], node.inputs['Vector'])
 
-    # Find the texture node with "GLOSS" in its name
+    # Find the texture node with "GLOSS" or "SPEC" in its name
     for node in nodes:
-        if node.type == 'TEX_IMAGE' and "gloss" in node.image.name.lower():
-            gloss_texture_node = node
+        if node.type == 'TEX_IMAGE' and ("gloss" in node.image.name.lower() or "spec" in node.image.name.lower()):
+            target_texture_node = node
             break
 
-    if gloss_texture_node:
+    if target_texture_node:
         # Check for Separate Color and Roughness Factor nodes
         separate_color_node = None
         roughness_factor_node = None
@@ -46,15 +46,15 @@ def connect_mapping_to_textures_and_adjust_gloss(material):
         if separate_color_node:
             nodes.remove(separate_color_node)
 
-        # Find the Principled BSDF node and connect gloss texture
+        # Find the Principled BSDF node and connect gloss/spec texture
         for node in nodes:
             if node.type == 'BSDF_PRINCIPLED':
-                material.node_tree.links.new(gloss_texture_node.outputs['Color'], node.inputs['Specular IOR Level'])
+                material.node_tree.links.new(target_texture_node.outputs['Color'], node.inputs['Specular IOR Level'])
 
 def adjust_shaders():
     # Iterate over all materials in the scene
     for material in bpy.data.materials:
-        connect_mapping_to_textures_and_adjust_gloss(material)
+        connect_mapping_to_textures_and_adjust_gloss_and_spec(material)
 
 class AdjustShaders(bpy.types.Operator):
     """Adjust Shaders"""
