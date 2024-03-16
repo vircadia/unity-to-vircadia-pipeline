@@ -9,11 +9,11 @@ You'll need:
 - Unity 2021.3.4.f1
   
   - gltfast package (by name, `com.unity.cloud.gltfast`)
-  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/Unity2Vircadia_v1.0.1.unitypackage)
+  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/Unity2Vircadia_v1.0.2.unitypackage)
 
 - Blender 4.0.2 or newer
   
-  - UnityToVircadia Blender addon [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_BlenderAddon_v1.0.1.zip)
+  - UnityToVircadia Blender addon [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_BlenderAddon_v1.0.2.zip)
 
 ### Step 1. Unity
 
@@ -28,11 +28,11 @@ You'll need:
 ### Step 2. Blender
 
 1. Start a new scene and delete any default content (cube, camera, light, etc.)
-2. Install the `UnityToVircadia` Blender plugin by going to "Edit/Preferences," select the "Add-on" tab and press the "Install" button. Select the `UnityToVircadia.zip` file and Press "Install Add-on". Press the check checkbox to enable the plugin. This will create a `UnityToVircadia` tab on the N panel.
+2. Install the `UnityToVircadia` Blender plugin by going to "Edit/Preferences," select the "Add-on" tab and press the "Install" button. Select the `UnityToVircadia_BlenderAddon_v1.0.2.zip` file and Press "Install Add-on". Press the check checkbox to enable the plugin. This will create a `UnityToVircadia` tab on the N panel.
 3. Open the `UnityToVircadia` tab on the N Panel
 4. Select "Import glTF 2.0" and Import the `.glb` file you exported from Unity
 5. Press "Import Lightmap Info" and a dialog will open. Select the "LightmapInfo.txt" file from the folder we created earlier. This will generate a mesh container for the lightmaps called "vircadia_lightmapData." \* Note: At the moment you will not see these lightmaps until export. container will be removed automatically in Vircadia-web
-6. Press "Adjust Shaders" to correct material properties and repeats.
+6. Press "Adjust Shaders" and a dialog will open. Select the "MaterialsCheckReport.txt" file to correct material properties and repeats.
 7. Press "Preview Lightmaps" to preview lightmaps. You can then "Clear Lightmaps" to revert to your previous state if you choose.
 8. Press the "Export glTF 2.0 button to export your model. Set your format to `glTF Binary (.glb)`. From within the export dialog, open the "include" tab and be sure "Custom Properties" is selected. We recommend setting your Material Image format to `Webp` and checking "Create Webp". Compression can be used as well to lower file size, but minor artifacts may appear. Export `glTF 2.0`.
 
