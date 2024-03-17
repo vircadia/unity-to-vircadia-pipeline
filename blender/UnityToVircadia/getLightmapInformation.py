@@ -1,5 +1,8 @@
 import bpy
 import os
+import re
+import random
+import string
 
 def load_lightmap_info(filepath):
     with open(filepath, 'r') as file:
@@ -16,25 +19,32 @@ def parse_info(content):
             if line.startswith('Lightmap Texture:'):
                 obj_info['lightmap_texture'] = line.split(': ')[1].strip()
             elif line.startswith('Tiling X:'):
-                obj_info['tiling_x'] = float(line.split(': ')[1].strip())
+                obj_info['tiling_x'] = float(line.split(': ')[1].strip().replace(',', '.'))
             elif line.startswith('Tiling Y:'):
-                obj_info['tiling_y'] = float(line.split(': ')[1].strip())
+                obj_info['tiling_y'] = float(line.split(': ')[1].strip().replace(',', '.'))
             elif line.startswith('Offset X:'):
-                obj_info['offset_x'] = float(line.split(': ')[1].strip())
+                obj_info['offset_x'] = float(line.split(': ')[1].strip().replace(',', '.'))
             elif line.startswith('Offset Y:'):
-                obj_info['offset_y'] = float(line.split(': ')[1].strip())
+                obj_info['offset_y'] = float(line.split(': ')[1].strip().replace(',', '.'))
             elif line.startswith('Path:'):
                 obj_info['path'] = line.split(': ')[1].strip()
         if 'lightmap_texture' in obj_info:
             info.append(obj_info)
     return info
 
+def generate_random_string(length):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
 def create_materials(obj_info):
     materials = []
     for info in obj_info:
+        # Generate a random string of 16 characters
+        random_string = generate_random_string(16)
+        
         # Remove the file extension for the lightmap texture name
         lightmap_texture_name_without_extension = os.path.splitext(info['lightmap_texture'])[0]
-        mat_name = f"vircadia_lightmapData_{lightmap_texture_name_without_extension}"
+        mat_name = f"vircadia_lightmapData_{random_string}"
         
         if mat_name in bpy.data.materials:
             mat = bpy.data.materials[mat_name]
@@ -46,12 +56,12 @@ def create_materials(obj_info):
             tex_image.label = "BASE COLOR"  # Set the label to "BASE COLOR"
             
             image_path = os.path.join(info['path'], info['lightmap_texture'])
-            image_name = os.path.splitext(os.path.basename(image_path))[0]  # Remove the extension from the image name
+            image_name = random_string  # Use the random string as the image name
             
             if image_name in bpy.data.images:
                 tex_image.image = bpy.data.images[image_name]
             else:
-                # Load the image and remove the extension from its name in Blender
+                # Load the image and set its name to the random string
                 loaded_image = bpy.data.images.load(image_path)
                 loaded_image.name = image_name
                 tex_image.image = loaded_image
@@ -97,7 +107,8 @@ def add_custom_properties(obj_info, materials):
     for info in obj_info:
         obj = bpy.data.objects.get(info['name'])
         if obj:
-            mat_name = f"vircadia_lightmapData_{os.path.splitext(info['lightmap_texture'])[0]}"
+            mat = materials[obj_info.index(info)]
+            mat_name = mat.name
             obj['vircadia_lightmap'] = mat_name
             obj['vircadia_lightmap_texcoord'] = 1
 
@@ -131,6 +142,7 @@ class GetLightmapInfo(bpy.types.Operator):
         return {'FINISHED'}
     
     def invoke(self, context, event):
+        self.filepath = "LightmapInfo.txt"  # Set the default file name
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
