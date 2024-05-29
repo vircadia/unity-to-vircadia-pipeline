@@ -9,7 +9,7 @@ You'll need:
 - Unity 2021.3.4.f1
   
   - gltfast package (by name, `com.unity.cloud.gltfast`)
-  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_v1.0.3.unitypackage)
+  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/Unity2Vircadia_v1.0.3.unitypackage)
 
 - Blender 4.0.2 or newer
   
