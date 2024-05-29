@@ -9,11 +9,11 @@ You'll need:
 - Unity 2021.3.4.f1
   
   - gltfast package (by name, `com.unity.cloud.gltfast`)
-  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/Unity2Vircadia_v1.0.1.unitypackage)
+  - Unity2Vircadia package [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_v1.0.3.unitypackage)
 
 - Blender 4.0.2 or newer
   
-  - UnityToVircadia Blender addon [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_BlenderAddon_v1.0.1.zip)
+  - UnityToVircadia Blender addon [**(this repo)**](https://github.com/vircadia/unity-to-vircadia-pipeline/raw/master/dist/UnityToVircadia_BlenderAddon_v1.0.3.zip)
 
 ### Step 1. Unity
 
@@ -42,3 +42,4 @@ You are now ready to upload your `.glb` file to the public folder. An S3 bucket 
 
 - Use URP shaders with a "Metallic" workflow. Specular is not recommended and may cause visual inconsistencies.
 - At the moment ".gltf" export (separate .bin and textures) from unity's glTFast plugin will not import properly into blender, so be sure to use ".glb"
+- Animation exports are not currently supported

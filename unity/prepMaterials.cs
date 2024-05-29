@@ -67,6 +67,45 @@ public class MaterialChecker
             lines.Insert(0, "Material Modifications Report:");
         }
 
+        // Add material tiling, offset, smoothness, and base color information
+        lines.Add("\nMaterial Tiling, Offset, Smoothness, and Base Color Information:");
+        HashSet<Material> processedMaterials = new HashSet<Material>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material material in renderer.sharedMaterials)
+            {
+                if (material == null || processedMaterials.Contains(material)) continue;
+
+                processedMaterials.Add(material);
+
+                lines.Add($"\nMaterial: {material.name}");
+                lines.Add($"Tiling X: {material.mainTextureScale.x}");
+                lines.Add($"Tiling Y: {material.mainTextureScale.y}");
+                lines.Add($"Offset X: {material.mainTextureOffset.x}");
+                lines.Add($"Offset Y: {material.mainTextureOffset.y}");
+
+                // Check if the material has the "_Smoothness" property
+                if (material.HasProperty("_Smoothness"))
+                {
+                    float smoothness = material.GetFloat("_Smoothness");
+                    lines.Add($"Smoothness: {smoothness}");
+                }
+
+                // Get the base color RGB values in the 0-255 range
+                if (material.HasProperty("_BaseColor"))
+                {
+                    Color baseColor = material.GetColor("_BaseColor");
+                    int baseColorR = Mathf.RoundToInt(baseColor.r * 255);
+                    int baseColorG = Mathf.RoundToInt(baseColor.g * 255);
+                    int baseColorB = Mathf.RoundToInt(baseColor.b * 255);
+                    lines.Add($"Base Color R: {baseColorR}");
+                    lines.Add($"Base Color G: {baseColorG}");
+                    lines.Add($"Base Color B: {baseColorB}");
+                }
+            }
+        }
+
         File.WriteAllLines(filePath, lines.ToArray());
         AssetDatabase.Refresh();
 
