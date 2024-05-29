@@ -6,7 +6,7 @@ using System.Linq;
 
 public class MaterialsLister
 {
-    [MenuItem("Tools/Vircadia/List All Materials and Textures")]
+    [MenuItem("Tools/Vircadia/List All Materials and Textures (debug only)")]
     public static void ListMaterialsAndTexturesToFile()
     {
         // Use OpenFolderPanel instead of SaveFilePanel to only get the folder path
